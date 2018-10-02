@@ -1,7 +1,7 @@
 <template>
   <div class="hello">
     <ul>
-      <li v-for="chat in chats" :key="chat.content">
+      <li v-for="chat in chats" :key="chat.id">
         <ChatComponent :chat="chat" />
       </li>
     </ul>

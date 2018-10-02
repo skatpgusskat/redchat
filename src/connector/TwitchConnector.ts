@@ -46,13 +46,17 @@ export default class TwitchConnector extends Connector {
       const content = data.substring(data.indexOf(':', indexOfPRIVMSG) + 1);
 
       const twitchHeaders = this.parseHeaders(headersString);
-      const { displayName } = twitchHeaders;
+      const { displayName, id } = twitchHeaders;
       if (!displayName) {
         throw new Error('cannot find display-name header');
+      }
+      if (!id) {
+        throw new Error('cannot find id header');
       }
       this.pushChat({
         username: displayName,
         usernameColor: twitchHeaders.color,
+        id,
         content,
       });
     };
