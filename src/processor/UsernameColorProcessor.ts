@@ -1,6 +1,7 @@
 import { IChat } from '@/Chat';
+import { IProcessor } from '@/processor/IProcessor';
 
-export default class Processor {
+export default class UsernameColorProcessor implements IProcessor {
   private usernameColorMap: { [username: string]: string } = {};
   public process(chat: IChat): IChat {
     if (!chat.usernameColor) {

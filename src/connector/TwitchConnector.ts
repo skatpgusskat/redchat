@@ -42,7 +42,7 @@ export default class TwitchConnector extends Connector {
         return;
       }
       console.log(data);
-      const headersString = data.substring(0, indexOfPRIVMSG)
+      const headersString = data.substring(0, indexOfPRIVMSG);
       const content = data.substring(data.indexOf(':', indexOfPRIVMSG) + 1);
 
       const twitchHeaders = this.parseHeaders(headersString);
@@ -66,12 +66,12 @@ export default class TwitchConnector extends Connector {
     super.destory();
   }
   private parseHeaders(headersString: string): TwitchHeaders {
-    return headersString.split(';').reduce((prev, string) => {
-      const firstEqualSignIndex = string.indexOf('=');
+    return headersString.split(';').reduce((prev, value) => {
+      const firstEqualSignIndex = value.indexOf('=');
       if (firstEqualSignIndex === -1) {
         return prev;
       }
-      let headerName = string.substring(0, firstEqualSignIndex)
+      let headerName = value.substring(0, firstEqualSignIndex)
         .split('-')
         .map((chunk, index) => {
           if (index === 0) {
@@ -80,7 +80,7 @@ export default class TwitchConnector extends Connector {
           return `${chunk.charAt(0).toUpperCase()}${chunk.slice(1)}`;
         })
         .join('');
-      const headerValue = string.substring(firstEqualSignIndex + 1);
+      const headerValue = value.substring(firstEqualSignIndex + 1);
       const isArray = headerName.startsWith('@');
 
       if (isArray) {

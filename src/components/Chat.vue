@@ -1,7 +1,13 @@
 <template>
   <span>
     <span class="username" :style="{ color: chat.usernameColor }">{{ chat.username }}: </span>
-    <span class="content">{{ chat.content }}</span>
+
+    <template v-if="chat.imageUrl">
+      <img class="content" :src="chat.imageUrl" />
+    </template>
+    <template v-else>
+      <span class="content">{{ chat.content }}</span>
+    </template>
   </span>
 </template>
 
