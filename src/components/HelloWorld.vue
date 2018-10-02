@@ -2,7 +2,7 @@
   <div class="hello">
     <ul>
       <li v-for="chat in chats" :key="chat.content">
-        {{ chat.username }}: {{ chat.content }}
+        <ChatComponent :chat="chat" />
       </li>
     </ul>
   </div>
@@ -13,20 +13,29 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import TwtichConnector from '@/connector/TwitchConnector';
 import Processor from '@/processor/Processor';
 import { IChat } from '@/Chat';
+import ChatComponent from '@/components/Chat.vue';
 
-@Component
+@Component({
+  components: {
+    ChatComponent,
+  },
+})
 export default class HelloWorld extends Vue {
   @Prop() private msg!: string;
 
-  connector = new TwtichConnector('namse_');
-  processor = new Processor();
-  chats: IChat[] = [];
+  private connector = new TwtichConnector('namse_');
+  private processor = new Processor();
+  private chats: IChat[] = [];
 
-  mounted() {
+  public mounted() {
     this.connector.onChat = (chat: IChat) => {
       const result = this.processor.process(chat);
       this.chats.push(result);
-    }
+    };
+  }
+
+  public beforeDestroy() {
+    this.connector.destory();
   }
 }
 </script>

@@ -8,4 +8,7 @@ export default class Connector {
     }
     this.onChat(chat);
   }
+  public destory() {
+    this.onChat = undefined;
+  }
 }

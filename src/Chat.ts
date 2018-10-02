@@ -1,4 +1,5 @@
 export interface IChat {
-  username: string,
-  content: string,
-};
+  username: string;
+  usernameColor?: string;
+  content: string;
+}
