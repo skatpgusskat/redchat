@@ -26,18 +26,28 @@ export default class HelloWorld extends Vue {
   private connector = new TwtichConnector('namse_');
   private processor = new Processor();
   private chats: IChat[] = [];
+  private duration = 5000;
 
   public mounted() {
     this.connector.onChat = (chat: IChat) => {
       console.log('before', chat);
       const result = this.processor.process(chat);
       console.log('after', result);
+
       this.chats.push(result);
+
+      this.setDeleteTimer(chat);
     };
   }
 
   public beforeDestroy() {
     this.connector.destory();
+  }
+
+  private setDeleteTimer(chat: IChat) {
+    setTimeout(() => {
+      this.chats = this.chats.filter((element) => element !== chat);
+    }, this.duration);
   }
 }
 </script>
