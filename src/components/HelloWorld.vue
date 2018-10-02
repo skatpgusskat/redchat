@@ -29,7 +29,9 @@ export default class HelloWorld extends Vue {
 
   public mounted() {
     this.connector.onChat = (chat: IChat) => {
+      console.log('before', chat);
       const result = this.processor.process(chat);
+      console.log('after', result);
       this.chats.push(result);
     };
   }
