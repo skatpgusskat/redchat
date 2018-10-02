@@ -1,5 +1,5 @@
 <template>
-  <div class="hello">
+  <div class="container">
     <ul>
       <li v-for="chat in chats" :key="chat.id">
         <ChatComponent :chat="chat" />
@@ -54,14 +54,16 @@ export default class HelloWorld extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
+.container {
+  height: 100%;
 }
-ul {
-  list-style-type: none;
+.container ul {
+  margin: 0;
   padding: 0;
-}
-a {
-  color: #42b983;
+  list-style: none;
+  vertical-align: bottom;
+  display: inline-block;
+  position: absolute;
+  bottom: 0px;
 }
 </style>
