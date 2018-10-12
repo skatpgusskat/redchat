@@ -71,6 +71,7 @@ interface YoutubeLiveChatMessageListResponse {
 export default class YouTubeConnector extends Connector {
   private chatId?: string;
   private pollingTimer?: number;
+  private liveId?: string;
 
   constructor(private channelId: string) {
     super();
@@ -83,7 +84,7 @@ export default class YouTubeConnector extends Connector {
     }
   }
 
-  private async getLiveId(): Promise<string> {
+  private async updateLiveId(): Promise<void> {
     const url = 'https://www.googleapis.com/youtube/v3/search' +
       '?eventType=live' +
       '&part=id' +
@@ -94,14 +95,16 @@ export default class YouTubeConnector extends Connector {
     const data = await response.json();
 
     const liveId = data.items[0].id.videoId;
-    return liveId;
+    this.liveId = liveId;
   }
 
   private async updateChatId(): Promise<void> {
-    const liveId = await this.getLiveId();
+    if (!this.liveId) {
+      await this.updateLiveId();
+    }
     const url = 'https://www.googleapis.com/youtube/v3/videos' +
       '?part=liveStreamingDetails' +
-      `&id=${liveId}` +
+      `&id=${this.liveId}` +
       `&key=${API_KEY}`;
     const response = await fetch(url);
     const data = await response.json();
@@ -128,12 +131,27 @@ export default class YouTubeConnector extends Connector {
   }
 
   private async startPolling() {
-    this.poll();
+    const lastLiveId = localStorage.getItem('lastLiveId');
+    const lastChatId = localStorage.getItem('lastChatId');
+    const lastPageToken = localStorage.getItem('lastPageToken') as string;
+
+    await this.updateLiveId();
+    await this.updateChatId();
+    const { liveId, chatId } = this;
+
+    if (lastLiveId === liveId && lastChatId === chatId) {
+      return this.poll(lastPageToken);
+    }
+
+    localStorage.setItem('lastLiveId', liveId as string);
+    localStorage.setItem('lastChatId', chatId as string);
+
+    return this.poll();
   }
 
   private async poll(pageToken?: string) {
     const messageList = await this.getMessageList(pageToken);
-    const { pollingIntervalMillis } = messageList;
+    const { pollingIntervalMillis, nextPageToken } = messageList;
 
     messageList.items.forEach((item) => {
       this.pushChat({
@@ -143,8 +161,10 @@ export default class YouTubeConnector extends Connector {
       });
     });
 
+    localStorage.setItem('lastPageToken', nextPageToken);
+
     this.pollingTimer = setTimeout(() => {
-      this.poll(messageList.nextPageToken);
+      this.poll(nextPageToken);
     }, pollingIntervalMillis);
   }
 }
