@@ -25,9 +25,12 @@
 <style scoped>
 .username {
   color: white;
+  font-weight: bold;
+  font-size: 30px;
 }
 
 .content {
   color: white;
+  font-size: 30px;
 }
 </style>
