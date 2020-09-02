@@ -21,7 +21,7 @@ provider:
         - "*"
 # you can define service wide environment variables here
   environment:
-    TWITCH_EXTENSION_SECRET_KEY: "${env:TWITCH_EXTENSION_SECRET_KEY}"
+    TWITCH_REDCHAT_SECRET_KEY: "${env:TWITCH_REDCHAT_SECRET_KEY}"
 
 functions:
   feed:
@@ -35,9 +35,32 @@ functions:
             parameters:
               paths:
                 channel: true
-
-# plugins:
+  getPresignedUrl:
+    handler: src/media/preSignedUrl.get
+    events:
+      - http:
+          path: media/preSignedUrl
+          method: get
+          cors: ${self:custom.cors}
+  encode:
+    handler: src/media/encode.post
+    package:
+      include:
+        - bin/ffmpeg
+    timeout: 10
+    events:
+      - http:
+          path: media/{mediaId}/encode
+          method: post
+          cors: ${self:custom.cors}
+          request:
+            parameters:
+              paths:
+                mediaId: true
+plugins:
 #   - serverless-domain-manager
+  - serverless-offline
+
 
 custom:
   cors:

@@ -1,7 +1,7 @@
 import AWS = require('aws-sdk');
 import uuid from 'uuid/v4';
 import extractToken from '../auth/extractToken';
-import authenticateExtensionToken from '../auth/authenticateExtensionToken';
+import authenticateOauthToken from '../auth/authenticateOauthToken';
 
 const s3 = new AWS.S3({
   region: 'ap-northeast-2',
@@ -12,7 +12,7 @@ const MB = 1024 * 1024;
 module.exports.get = async (event: any, _: any, callback: (error: Error, result: any) => void) => {
   try {
     const token = extractToken(event.headers);
-    const decoded = await authenticateExtensionToken(token);
+    const decoded = await authenticateOauthToken(token);
     const {
       role,
       user_id: userId,

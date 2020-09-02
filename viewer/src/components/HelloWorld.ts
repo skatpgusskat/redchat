@@ -17,7 +17,7 @@ export default class HelloWorld extends Vue {
 
   private connectors = [
     new TwtichConnector('namse_'),
-    new YouTubeConnector('UCLQyQrwUpXasp7ejfQsjS0g'),
+    // new YouTubeConnector('UCLQyQrwUpXasp7ejfQsjS0g'),
   ]
   private processors: IProcessor[] = [
     new EmoticonProcessor(),
@@ -26,9 +26,19 @@ export default class HelloWorld extends Vue {
   private chats: IChat[] = [];
   private duration = 20000;
 
+  private filters: Array<string | RegExp> = [/\[by /g];
+
   public mounted() {
     this.connectors.forEach((connector) => {
       connector.onChat = (chat: IChat) => {
+        const isFiltered = this.filters.some((filter) => {
+          return chat.content.match(filter) !== null;
+        });
+
+        if (isFiltered) {
+          return;
+        }
+
         console.log('before', chat);
         const result = this.processors.reduce((prev, processor) => {
           return processor.process(prev);

@@ -26,13 +26,13 @@
 .username {
   color: white;
   font-weight: bold;
-  font-size: 30px;
+  font-size: 25px;
   text-shadow: 1px 1px 3px rgb(50, 50, 50);
 }
 
 .content {
   color: white;
-  font-size: 30px;
+  font-size: 25px;
   text-shadow: 1px 1px 3px rgb(50, 50, 50);
 }
 </style>

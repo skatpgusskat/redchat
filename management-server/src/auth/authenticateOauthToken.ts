@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-const secretKey = process.env.TWITCH_EXTENSION_SECRET_KEY || 'test';
+const secretKey = process.env.TWITCH_REDCHAT_SECRET_KEY || 'test';
 const SECRET_BUFFER = new Buffer(secretKey, 'base64');
 
 interface AuthResult {
@@ -9,6 +9,7 @@ interface AuthResult {
   role: string;
 }
 
-export default function authenticateExtensionToken(token) {
+export default function authenticateOauthToken(token) {
+  console.log(token, secretKey);
   return jwt.verify(token, SECRET_BUFFER) as AuthResult;
 }

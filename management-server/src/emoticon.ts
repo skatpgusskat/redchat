@@ -1,8 +1,8 @@
 import AWS = require('aws-sdk');
-import authenticateExtensionToken from './auth/authenticateExtensionToken';
 import extractToken from './auth/extractToken';
 import { encode } from './media/encode';
 import { runWithOptimisticLock, putDocumnetWithVersion } from './utils/putOptimisticly';
+import authenticateOauthToken from './auth/authenticateOauthToken';
 
 const documentClient = new AWS.DynamoDB.DocumentClient({
   region: 'ap-northeast-2',
@@ -31,12 +31,8 @@ export async function post(event: any, _: any, callback: (error: Error, result: 
 
     const token = extractToken(event.headers);
     const {
-      role,
       user_id: userId,
-    } = await authenticateExtensionToken(token);
-    if (role !== 'broadcaster') {
-      throw new Error('you are not broadcaster. fuck you');
-    }
+    } = await authenticateOauthToken(token);
 
     const key = `${userId}/${mediaId}`;
 
